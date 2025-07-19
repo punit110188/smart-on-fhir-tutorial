@@ -31,9 +31,17 @@
           var fname = '';
           var lname = '';
 
+          // if (typeof patient.name[0] !== 'undefined') {
+          //   fname = patient.name[0].given.join(' ');
+          //   lname = patient.name[0].family.join(' ');
+          // }
+
           if (typeof patient.name[0] !== 'undefined') {
-            fname = patient.name[0].given.join(' ');
-            lname = patient.name[0].family.join(' ');
+              // If 'given' is an array, join the names with a space; otherwise, use it directly
+              fname = Array.isArray(patient.name[0].given) ? patient.name[0].given.join(' ') : patient.name[0].given;
+
+            // If 'family' is an array, join it with a space; otherwise, use the string directly
+            lname = Array.isArray(patient.name[0].family) ? patient.name[0].family.join(' ') : patient.name[0].family;
           }
 
           var height = byCodes('8302-2');
