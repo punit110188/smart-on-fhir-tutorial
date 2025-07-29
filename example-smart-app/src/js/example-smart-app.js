@@ -134,7 +134,7 @@
     $('#diastolicbp').html(p.diastolicbp);
     $('#ldl').html(p.ldl);
     $('#hdl').html(p.hdl);
-    fetchAndRenderClinicalTrials();
+    fetchTrialsV2();
   };
 
   function fetchTrialsV2() {
