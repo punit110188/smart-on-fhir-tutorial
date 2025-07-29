@@ -31,16 +31,17 @@
       });
     </script> -->
 
-    <script>
+   <script>
   const iss = new URLSearchParams(window.location.search).get("iss");
 
   FHIR.oauth2.authorize({
-    'client_id': '558ba9c7-d617-4ba0-94e0-35d13a506974',
-    'scope': 'launch patient/Patient.read patient/Observation.read openid profile online_access',
-    'redirect_uri': window.location.href,
-    'iss': iss
+    client_id: '558ba9c7-d617-4ba0-94e0-35d13a506974',
+    scope: 'launch patient/Patient.read patient/Observation.read openid profile online_access',
+    redirect_uri: 'https://punit110188.github.io/smart-on-fhir-tutorial/example-smart-app/launch.html',
+    iss: iss
   });
 </script>
+
     <div class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
