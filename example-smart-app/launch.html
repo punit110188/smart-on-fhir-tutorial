@@ -24,26 +24,12 @@
     <!-- Prevent session bleed caused by single threaded embedded browser and sessionStorage API -->
     <!-- https://github.com/cerner/fhir-client-cerner-additions -->
     <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
-<!--     <script>
+    <script>
       FHIR.oauth2.authorize({
-        'client_id': '558ba9c7-d617-4ba0-94e0-35d13a506974',
+        'client_id': '25fca8a6-a13d-42b4-8cb7-23f23c1b1b12',
         'scope':  'patient/Patient.read patient/Observation.read launch online_access openid profile'
       });
-    </script> -->
-
-   <script>
-  const iss = new URLSearchParams(window.location.search).get("iss");
-const launch = new URLSearchParams(window.location.search).get("launch");
-
-FHIR.oauth2.authorize({
-  client_id: "25fca8a6-a13d-42b4-8cb7-23f23c1b1b12",
-  scope: "launch patient/Patient.read patient/Observation.read openid profile online_access",
-  redirect_uri: "https://punit110188.github.io/smart-on-fhir-tutorial/example-smart-app/launch.html",
-  iss,
-  launch
-});
-
-</script>
+    </script>
 
     <div class="spinner">
       <div class="bounce1"></div>
