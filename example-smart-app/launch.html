@@ -48,14 +48,19 @@
     } else {
       // Redirect phase - ready to use FHIR client
       FHIR.oauth2.ready(function(client) {
-  extractData().then(drawVisualization).catch(error => {
-    console.error("Data Extraction Error:", error);
-    document.body.innerHTML = `<p style="color:red">Failed to load patient data.</p>`;
-  });
-}).catch(error => {
-        console.error("OAuth2 Error:", error);
-        document.body.innerHTML = `<p style="color:red">Failed to load FHIR client.</p>`;
+  try {
+    extractData(client)
+      .then(drawVisualization)
+      .catch(error => {
+        console.error("Data Extraction Error:", error);
+        document.body.innerHTML = `<p style="color:red">Failed to load patient data.</p>`;
       });
+  } catch (error) {
+    console.error("OAuth2 or Extract Error:", error);
+    document.body.innerHTML = `<p style="color:red">Failed to load FHIR client.</p>`;
+  }
+});
+
     }
   </script>
 </body>
