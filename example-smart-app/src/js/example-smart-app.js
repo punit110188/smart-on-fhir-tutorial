@@ -134,6 +134,37 @@
     $('#diastolicbp').html(p.diastolicbp);
     $('#ldl').html(p.ldl);
     $('#hdl').html(p.hdl);
+    fetchAndRenderClinicalTrials();
   };
+
+  function fetchAndRenderClinicalTrials() {
+  fetch("https://clinicaltrials.gov/api/v2/studies?query.titles=cancer&pageSize=50")
+    .then(res => res.json())
+    .then(data => {
+      const trials = data.studies.slice(0, 10);
+      const container = document.getElementById("trials-list");
+      container.innerHTML = "";
+
+      trials.forEach((t, i) => {
+        const html = `
+          <div style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 6px;">
+            <strong>${i + 1}. ${t.briefTitle}</strong><br>
+            Status: ${t.studyStatus}<br>
+            Condition: ${t.conditions?.join(", ") || "N/A"}<br>
+            Start Date: ${t.startDate || "N/A"}<br>
+            <a href="https://clinicaltrials.gov/study/${t.nctId}" target="_blank">View on ClinicalTrials.gov</a>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+
+      document.getElementById("trials").style.display = "block";
+    })
+    .catch(err => {
+      console.error("Failed to load clinical trials:", err);
+      document.getElementById("trials-list").innerHTML = "<p>Error loading clinical trials.</p>";
+    });
+}
+
 
 })(window);
