@@ -6,13 +6,28 @@
   <link rel="stylesheet" href="./src/css/example-smart-app.css" />
   <script src="./lib/js/fhir-client-v0.1.12.js"></script>
   <script src="./lib/js/fhir-client-cerner-additions-1.0.0.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="./example-smart-app.js"></script>
 </head>
 <body>
-  <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  </div>
+  <div id="loading">Loading patient data...</div>
+<div id="holder" style="display:none;">
+  <h2>Patient Info</h2>
+  <p><strong>First Name:</strong> <span id="fname"></span></p>
+  <p><strong>Last Name:</strong> <span id="lname"></span></p>
+  <p><strong>Gender:</strong> <span id="gender"></span></p>
+  <p><strong>Birthdate:</strong> <span id="birthdate"></span></p>
+  <p><strong>Height:</strong> <span id="height"></span></p>
+  <p><strong>Systolic BP:</strong> <span id="systolicbp"></span></p>
+  <p><strong>Diastolic BP:</strong> <span id="diastolicbp"></span></p>
+  <p><strong>LDL:</strong> <span id="ldl"></span></p>
+  <p><strong>HDL:</strong> <span id="hdl"></span></p>
+</div>
+
+<div id="trials" style="display:none;">
+  <h3>Matching Clinical Trials</h3>
+  <div id="trials-list"></div>
+</div>
 
   <script>
     const clientId = '25fca8a6-a13d-42b4-8cb7-23f23c1b1b12';
@@ -33,8 +48,9 @@
     } else {
       // Redirect phase - ready to use FHIR client
       FHIR.oauth2.ready(function(client) {
-  client.patient.read().then(function(patient) {
-    document.body.innerHTML = `<h2>Patient Info</h2><pre>${JSON.stringify(patient, null, 2)}</pre>`;
+  extractData().then(drawVisualization).catch(error => {
+    console.error("Data Extraction Error:", error);
+    document.body.innerHTML = `<p style="color:red">Failed to load patient data.</p>`;
   });
 }).catch(error => {
         console.error("OAuth2 Error:", error);
