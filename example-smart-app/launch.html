@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel='stylesheet' type='text/css' href='./src/css/example-smart-app.css'>
-    <!--
-      Temporarily disable cerner-smart-embeddable-lib
-      <link rel='stylesheet' type='text/css' href='./lib/css/cerner-smart-embeddable-lib-1.0.0.min.css'>
-    -->
-    <title>Example-SMART-App</title>
-  </head>
-  <body>
-    <!-- Required JS files to enable this page to embed within an MPage -->
-    <!--
-      Temporarily disable cerner-smart-embeddable-lib
-      <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
-      <script src='./lib/js/cerner-smart-embeddable-lib-1.0.0.min.js'></script>
-    -->
+<head>
+  <meta charset="utf-8" />
+  <title>Example-SMART-App</title>
+  <link rel="stylesheet" href="./src/css/example-smart-app.css" />
+  <script src="./lib/js/fhir-client-v0.1.12.js"></script>
+  <script src="./lib/js/fhir-client-cerner-additions-1.0.0.js"></script>
+</head>
+<body>
+  <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
 
-    <!-- FHIR Client JS Library -->
-    <script src='./lib/js/fhir-client-v0.1.12.js'></script>
+  <script>
+    const clientId = '25fca8a6-a13d-42b4-8cb7-23f23c1b1b12';
+    const redirectUri = 'https://punit110188.github.io/smart-on-fhir-tutorial/example-smart-app/launch.html';
 
-    <!-- Prevent session bleed caused by single threaded embedded browser and sessionStorage API -->
-    <!-- https://github.com/cerner/fhir-client-cerner-additions -->
-    <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
-    <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+
+    if (!code) {
+      // Initial launch
+      const iss = params.get('iss');
       FHIR.oauth2.authorize({
-        'client_id': '25fca8a6-a13d-42b4-8cb7-23f23c1b1b12',
-        'scope':  'patient/Patient.read patient/Observation.read launch online_access openid profile'
+        client_id: clientId,
+        scope: 'launch patient/Patient.read patient/Observation.read openid profile online_access',
+        redirect_uri: redirectUri,
+        iss: iss
       });
-    </script>
-
-    <div class="spinner">
-      <div class="bounce1"></div>
-      <div class="bounce2"></div>
-      <div class="bounce3"></div>
-    </div>
-  </body>
+    } else {
+      // Redirect phase - ready to use FHIR client
+      FHIR.oauth2.ready().then(client => {
+        return client.patient.read().then(patient => {
+          document.body.innerHTML = `<h2>Patient Info</h2><pre>${JSON.stringify(patient, null, 2)}</pre>`;
+        });
+      }).catch(error => {
+        console.error("OAuth2 Error:", error);
+        document.body.innerHTML = `<p style="color:red">Failed to load FHIR client.</p>`;
+      });
+    }
+  </script>
+</body>
 </html>
