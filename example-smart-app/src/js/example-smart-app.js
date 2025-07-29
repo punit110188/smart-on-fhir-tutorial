@@ -137,34 +137,54 @@
     fetchAndRenderClinicalTrials();
   };
 
-  function fetchAndRenderClinicalTrials() {
+  function fetchTrialsV2() {
   fetch("https://clinicaltrials.gov/api/v2/studies?query.titles=cancer&pageSize=50")
     .then(res => res.json())
-    .then(data => {
-      const trials = data.studies.slice(0, 10);
-      const container = document.getElementById("trials-list");
-      container.innerHTML = "";
-
-      trials.forEach((t, i) => {
-        const html = `
-          <div style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 6px;">
-            <strong>${i + 1}. ${t.briefTitle}</strong><br>
-            Status: ${t.studyStatus}<br>
-            Condition: ${t.conditions?.join(", ") || "N/A"}<br>
-            Start Date: ${t.startDate || "N/A"}<br>
-            <a href="https://clinicaltrials.gov/study/${t.nctId}" target="_blank">View on ClinicalTrials.gov</a>
-          </div>
-        `;
-        container.innerHTML += html;
-      });
-
-      document.getElementById("trials").style.display = "block";
-    })
-    .catch(err => {
-      console.error("Failed to load clinical trials:", err);
-      document.getElementById("trials-list").innerHTML = "<p>Error loading clinical trials.</p>";
-    });
+    .then(data => renderTrialsV2(data.studies))
+    .catch(err => console.error("Failed to fetch trial data", err));
 }
+
+  function renderTrialsV2(studies) {
+  const container = document.getElementById("trials-list");
+  container.innerHTML = "";
+  
+  studies.slice(0, 10).forEach((study, i) => {
+    const trial = extractTrialDetails(study);
+
+    const html = `
+      <div style="margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #ccc;">
+        <strong>${i + 1}. ${trial.title}</strong><br/>
+        <em>${trial.sponsor}</em><br/>
+        Status: ${trial.status || "N/A"}<br/>
+        Start Date: ${trial.startDate || "N/A"}<br/>
+        <p>${trial.summary}</p>
+        <a href="${trial.url}" target="_blank">View Full Trial</a>
+      </div>
+    `;
+    container.innerHTML += html;
+  });
+
+  document.getElementById("trials").style.display = "block";
+}
+
+  function extractTrialDetails(study) {
+  const idModule = study.protocolSection.identificationModule;
+  const statusModule = study.protocolSection.statusModule;
+  const descModule = study.protocolSection.descriptionModule;
+  const sponsorModule = study.protocolSection.sponsorCollaboratorsModule;
+
+  return {
+    nctId: idModule?.nctId,
+    title: idModule?.briefTitle,
+    sponsor: sponsorModule?.leadSponsor?.name,
+    status: statusModule?.overallStatus,
+    startDate: statusModule?.startDateStruct?.date,
+    summary: descModule?.briefSummary,
+    url: `https://clinicaltrials.gov/study/${idModule?.nctId}`
+  };
+}
+
+
 
 
 })(window);
