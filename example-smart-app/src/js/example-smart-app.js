@@ -10,8 +10,8 @@
  function onReady(smart) {
   if (smart.hasOwnProperty('patient')) {
     smart.patient.read().then(function(pt) {
-        const fname: Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '',
-        const lname: Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '',
+        const fname = Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '',
+        const lname = Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '',
       const info = {
         PatientName: `${fname} ${lname}`.trim(),
         gender: pt.gender || '',
