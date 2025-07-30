@@ -26,7 +26,7 @@
       const encoded = encodeURIComponent(btoa(json));
 
       //const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
-const vbAppUrl = `www.google.com;
+      const vbAppUrl = `www.google.com`;
       console.log("Redirecting to:", vbAppUrl);
       window.open(vbAppUrl, '_blank');
 
