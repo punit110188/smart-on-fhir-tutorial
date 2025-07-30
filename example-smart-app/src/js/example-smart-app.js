@@ -21,13 +21,37 @@
             lname = Array.isArray(pt.name[0].family) ? pt.name[0].family.join(' ') : pt.name[0].family;
           }
 
-          var p = defaultPatient();
-          p.birthdate = pt.birthDate;
-          p.gender = gender;
-          p.fname = fname;
-          p.lname = lname;
+          // var p = defaultPatient();
+          // p.birthdate = pt.birthDate;
+          // p.gender = gender;
+          // p.fname = fname;
+          // p.lname = lname;
 
-          ret.resolve(p);
+          // ret.resolve(p);
+
+          const p = defaultPatient();
+p.birthdate = pt.birthDate;
+p.gender = gender;
+p.fname = fname;
+p.lname = lname;
+
+// Build query string
+const query = new URLSearchParams({
+  fname: fname,
+  lname: lname,
+  gender: gender,
+  birthdate: pt.birthDate
+}).toString();
+
+// Local VB app preview URL
+const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?${query}`;
+
+// Redirect to VB app
+window.open(vbAppUrl, '_blank'); // or use window.location.href to open in same tab
+
+// Optionally: resolve p to keep rest of app functional
+ret.resolve(p);
+          
         }).catch(onError);
       } else {
         onError();
