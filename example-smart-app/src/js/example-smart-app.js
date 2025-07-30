@@ -25,10 +25,21 @@
       const json = JSON.stringify(payload);
       const encoded = encodeURIComponent(btoa(json));
 
-      const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
-      // const vbAppUrl = `https://www.google.com`;
-      console.log("Redirecting to:", vbAppUrl);
-      window.open(vbAppUrl, '_blank');
+
+      const btn = document.createElement('button');
+      btn.innerText = 'Continue to VB App';
+      btn.style.padding = '10px 20px';
+      btn.style.fontSize = '16px';
+      btn.onclick = () => {
+        const targetUrl = `http://127.0.0.1:64721/L1VzZXJz.../providerdirectory/?data=${encoded}`;
+        window.open(targetUrl, '_blank');
+      };
+      document.body.appendChild(btn);
+
+      // const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
+      // // const vbAppUrl = `https://www.google.com`;
+      // console.log("Redirecting to:", vbAppUrl);
+      // window.open(vbAppUrl, '_blank');
 
     }).fail(onError);
   }
