@@ -7,45 +7,33 @@
       ret.reject();
     }
 
-    function onReady(smart)  {
-      if (smart.hasOwnProperty('patient')) {
-        var patient = smart.patient;
+ function onReady(smart) {
+  if (smart.hasOwnProperty('patient')) {
+    smart.patient.read().then(function(pt) {
+      const info = {
+        fname: Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '',
+        lname: Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '',
+        gender: pt.gender || '',
+        birthdate: pt.birthDate || ''
+      };
 
-        patient.read().then(function(pt) {
-  var gender = pt.gender;
-  var fname = '';
-  var lname = '';
+      const payload = {
+        patient: info,
+        trials: [] // optionally mock or fetch this separately
+      };
 
-  if (typeof pt.name[0] !== 'undefined') {
-    fname = Array.isArray(pt.name[0].given) ? pt.name[0].given.join(' ') : pt.name[0].given;
-    lname = Array.isArray(pt.name[0].family) ? pt.name[0].family.join(' ') : pt.name[0].family;
+      const json = JSON.stringify(payload);
+      const encoded = encodeURIComponent(btoa(json));
+
+      const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
+
+      console.log("Redirecting to:", vbAppUrl);
+      window.open(vbAppUrl, '_blank');
+
+    }).catch(console.error);
   }
+}
 
-  const p = defaultPatient();
-  p.birthdate = pt.birthDate;
-  p.gender = gender;
-  p.fname = fname;
-  p.lname = lname;
-
-  // Construct query
-  const query = new URLSearchParams({
-    fname: fname,
-    lname: lname,
-    gender: gender,
-    birthdate: pt.birthDate
-  }).toString();
-
-  const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?${query}`;
-
-  // Redirect to VB App
-  window.open(vbAppUrl, '_blank');
-
-  ret.resolve(p);
-}, onError);
-      } else {
-        onError();
-      }
-    }
 
     FHIR.oauth2.ready(onReady, onError);
     return ret.promise();
