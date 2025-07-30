@@ -30,7 +30,7 @@
       console.log("Redirecting to:", vbAppUrl);
       window.open(vbAppUrl, '_blank');
 
-    }).catch(console.error);
+    }).fail(onError);
   }
 }
 
