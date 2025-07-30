@@ -10,9 +10,10 @@
  function onReady(smart) {
   if (smart.hasOwnProperty('patient')) {
     smart.patient.read().then(function(pt) {
+        const fname: Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '',
+        const lname: Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '',
       const info = {
-        fname: Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '',
-        lname: Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '',
+        PatientName: `${fname} ${lname}`.trim(),
         gender: pt.gender || '',
         birthdate: pt.birthDate || ''
       };
@@ -24,17 +25,6 @@
 
       const json = JSON.stringify(payload);
       const encoded = encodeURIComponent(btoa(json));
-
-
-      // const btn = document.createElement('button');
-      // btn.innerText = 'Continue to VB App';
-      // btn.style.padding = '10px 20px';
-      // btn.style.fontSize = '16px';
-      // btn.onclick = () => {
-      //   const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
-      //   window.open(vbAppUrl, '_blank');
-      // };
-      // document.body.appendChild(btn);
 
       const vbAppUrl = `http://127.0.0.1:63549/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
       // const vbAppUrl = `https://www.google.com`;
