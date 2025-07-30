@@ -12,47 +12,36 @@
         var patient = smart.patient;
 
         patient.read().then(function(pt) {
-          var gender = pt.gender;
-          var fname = '';
-          var lname = '';
+  var gender = pt.gender;
+  var fname = '';
+  var lname = '';
 
-          if (typeof pt.name[0] !== 'undefined') {
-            fname = Array.isArray(pt.name[0].given) ? pt.name[0].given.join(' ') : pt.name[0].given;
-            lname = Array.isArray(pt.name[0].family) ? pt.name[0].family.join(' ') : pt.name[0].family;
-          }
+  if (typeof pt.name[0] !== 'undefined') {
+    fname = Array.isArray(pt.name[0].given) ? pt.name[0].given.join(' ') : pt.name[0].given;
+    lname = Array.isArray(pt.name[0].family) ? pt.name[0].family.join(' ') : pt.name[0].family;
+  }
 
-          // var p = defaultPatient();
-          // p.birthdate = pt.birthDate;
-          // p.gender = gender;
-          // p.fname = fname;
-          // p.lname = lname;
+  const p = defaultPatient();
+  p.birthdate = pt.birthDate;
+  p.gender = gender;
+  p.fname = fname;
+  p.lname = lname;
 
-          // ret.resolve(p);
+  // Construct query
+  const query = new URLSearchParams({
+    fname: fname,
+    lname: lname,
+    gender: gender,
+    birthdate: pt.birthDate
+  }).toString();
 
-          const p = defaultPatient();
-p.birthdate = pt.birthDate;
-p.gender = gender;
-p.fname = fname;
-p.lname = lname;
+  const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?${query}`;
 
-// Build query string
-const query = new URLSearchParams({
-  fname: fname,
-  lname: lname,
-  gender: gender,
-  birthdate: pt.birthDate
-}).toString();
+  // Redirect to VB App
+  window.open(vbAppUrl, '_blank');
 
-// Local VB app preview URL
-const vbAppUrl = `http://127.0.0.1:64721/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?${query}`;
-
-// Redirect to VB app
-window.open(vbAppUrl, '_blank'); // or use window.location.href to open in same tab
-
-// Optionally: resolve p to keep rest of app functional
-ret.resolve(p);
-          
-        }).catch(onError);
+  ret.resolve(p);
+}, onError);
       } else {
         onError();
       }
