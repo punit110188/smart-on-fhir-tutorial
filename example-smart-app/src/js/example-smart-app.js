@@ -10,30 +10,40 @@
  function onReady(smart) {
   if (smart.hasOwnProperty('patient')) {
     smart.patient.read().then(function(pt) {
-        const fname = Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '';
-        const lname = Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '';
+      const fname = Array.isArray(pt.name?.[0]?.given) ? pt.name[0].given.join(" ") : pt.name?.[0]?.given || '';
+      const lname = Array.isArray(pt.name?.[0]?.family) ? pt.name[0].family.join(" ") : pt.name?.[0]?.family || '';
       const info = {
         PatientName: `${fname} ${lname}`.trim(),
         gender: pt.gender || '',
         birthdate: pt.birthDate || ''
       };
 
-      const payload = {
-        patient: info,
-        trials: [] // optionally mock or fetch this separately
-      };
+      // Fetch trials next
+      fetch("https://clinicaltrials.gov/api/v2/studies?query.titles=cancer&pageSize=10")
+        .then(res => res.json())
+        .then(data => {
+          const trials = data.studies.map(extractTrialDetails);
 
-      const json = JSON.stringify(payload);
-      const encoded = encodeURIComponent(btoa(json));
+          const payload = {
+            patient: info,
+            trials: trials
+          };
 
-      const vbAppUrl = `${window.location.origin}/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
-      // const vbAppUrl = `https://www.google.com`;
-      console.log("Redirecting to:", vbAppUrl);
-      window.open(vbAppUrl, '_blank');
+          const json = JSON.stringify(payload);
+          const encoded = encodeURIComponent(btoa(json));
+
+          const vbAppUrl = `http://127.0.0.1:59030/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
+          console.log("Redirecting to:", vbAppUrl);
+          window.open(vbAppUrl, '_blank');
+        })
+        .catch(err => {
+          console.error("Failed to fetch trials", err);
+        });
 
     }).fail(onError);
   }
 }
+
 
 
     FHIR.oauth2.ready(onReady, onError);
