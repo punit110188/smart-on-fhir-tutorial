@@ -34,7 +34,7 @@
 
           const vbAppUrl = `http://127.0.0.1:59030/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
           console.log("Redirecting to:", vbAppUrl);
-          window.open(vbAppUrl, '_blank');
+          window.location.href = vbAppUrl;
         })
         .catch(err => {
           console.error("Failed to fetch trials", err);
