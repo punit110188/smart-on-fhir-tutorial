@@ -30,9 +30,14 @@
           };
 
           const json = JSON.stringify(payload);
-          const encoded = encodeURIComponent(btoa(json));
 
-          const vbAppUrl = `http://127.0.0.1:59030/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
+          function safeBtoa(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+          }
+
+          const encoded = encodeURIComponent(safeBtoa(json));
+
+          const vbAppUrl = `http://127.0.0.1:58320/L1VzZXJzL3B1bmlzcml2L0Rvd25sb2Fkcy9wZGRfdGVzdC0xLjA/design/pdd_test/1750998212126/preview/webApps/providerdirectory/?data=${encoded}`;
           console.log("Redirecting to:", vbAppUrl);
           window.location.href = vbAppUrl;
         })
